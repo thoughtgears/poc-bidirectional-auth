@@ -1,7 +1,4 @@
-const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
-const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
-const fs = require('fs');
-const {apps} = require("firebase-admin");
+const {Firestore} = require('@google-cloud/firestore')
 
 const data = {
   name: 'Los Angeles',
@@ -9,23 +6,18 @@ const data = {
   country: 'USA'
 };
 
-exports.handler = async function (event) {
-  const service_account_info = process.env.GCP_CONFIG
-
-  fs.writeFile('/tmp/credentials.json', JSON.parse(service_account_info), {}, (err) => {
-    if (err) throw err;
-  });
-
-  process.env.GOOGLE_APPLICATION_CREDENTIALS = '/tmp/credentials.json';
-
-  initializeApp({
+const firestore = new Firestore(
+  {
     projectId: 'auth-poc-12222',
-    credential: applicationDefault()
-  });
+    keyFilename: 'sts-creds.json'
+  }
+);
 
-  const db = getFirestore();
+exports.handler = async function (event) {
+  const ref = firestore.collection('cities')
+  ref.doc('LA').set(data)
+    .catch(err => {throw err})
 
-  const res = await db.collection('cities').doc('LA').set(data);
-
-  console.log(res);
+  const doc = await ref.doc('LA').get()
+  return JSON.stringify(doc.data());
 };

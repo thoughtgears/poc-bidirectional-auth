@@ -78,7 +78,7 @@
   dependencies:
     tslib "^2.1.0"
 
-"@google-cloud/firestore@^6.4.0":
+"@google-cloud/firestore@^6.4.0", "@google-cloud/firestore@^6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@google-cloud/firestore/-/firestore-6.5.0.tgz#5049740e40eca75956264377ca9ffaab2c0f345d"
   integrity sha512-U0QwG6pEQxO5c0v0eUylswozmuvlvz7iXSW+I18jzqR2hAFrUq2Weu1wm3NaH8wGD4ZL7W9Be4cMHG5CYU8LuQ==

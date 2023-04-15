@@ -4,10 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "creds": "sh ./generate-creds.sh",
     "clean": "rm -rf node_modules && rm -rf function.zip",
-    "build": "yarn clean && yarn install --production=true && zip -r function.zip ."
+    "build": "yarn clean && yarn install --production=true && yarn creds && zip -r function.zip node_modules index.js package.json yarn.lock sts-creds.json",
+    "build:docker": "yarn creds && docker build -t aws-app ."
   },
   "dependencies": {
+    "@google-cloud/firestore": "^6.5.0",
     "firebase-admin": "^11.6.0"
   }
 }

@@ -15,8 +15,8 @@ sequenceDiagram
 
 #### Aws app
 
-A simple `GET /` endpoint that will connect to a project in GCP and get data from a firestore collection to respond to 
-the requester. 
+A simple `GET /` endpoint that will connect to a project in GCP and set and get data from a firestore collection to 
+respond to the requester. 
 
 #### GCP app
 
