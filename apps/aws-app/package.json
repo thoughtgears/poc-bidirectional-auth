@@ -1,9 +1,13 @@
 {
   "name": "aws-app",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf node_modules && rm -rf function.zip",
+    "build": "yarn clean && yarn install --production=true && zip -r function.zip ."
+  },
   "dependencies": {
-    "@google-cloud/firestore": "^6.5.0"
+    "firebase-admin": "^11.6.0"
   }
 }

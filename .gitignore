@@ -8,3 +8,10 @@
 
 .env
 .DS_Store
+
+**/*.plan
+**/.terraform
+
+**/function.zip
+
+*.json
