@@ -8,7 +8,7 @@ const data = {
 
 const firestore = new Firestore(
   {
-    projectId: 'auth-poc-12222',
+    projectId: process.env.PROJECT_ID,
     keyFilename: 'sts-creds.json'
   }
 );

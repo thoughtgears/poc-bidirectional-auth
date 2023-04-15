@@ -94,3 +94,9 @@ gcloud beta iam workload-identity-pools create-cred-config \
 gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} --member="serviceAccount:aws-federated@${GCP_PROJECT_ID}.iam.gserviceaccount.com" --role="roles/datastore.user"
 ```
 </details>
+
+### Lambda function
+
+Setup your lambda function and export your GCP project as an environment variable called PROJECT_ID, also ensure you 
+create a role in AWS with the correct name to match the permissions you set in GCP. Run `yarn build` and upload the zip 
+to the lambda function. 
