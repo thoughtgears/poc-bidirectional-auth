@@ -38,59 +38,59 @@ AWS_ROLE_NAME=your-aws-role-name
 <details>
   <summary>GCP</summary>
     
-    #### Prepare project
-    ```shell
-    gcloud projects create ${GCP_PROJECT_ID}
-    gcloud beta billing projects link ${GCP_PROJECT_ID} --billing-account=${GCP_BILLING_ACCOUNT}
-    gcloud config set project "${GCP_PROJECT_ID}"
+#### Prepare project
+```shell
+gcloud projects create ${GCP_PROJECT_ID}
+gcloud beta billing projects link ${GCP_PROJECT_ID} --billing-account=${GCP_BILLING_ACCOUNT}
+gcloud config set project "${GCP_PROJECT_ID}"
+
+googleapis=( iam.googleapis.com iamcredentials.googleapis.com cloudresourcemanager.googleapis.com serviceusage.googleapis.com sts.googleapis.com )
+
+# Enable APIs in GCP
+for i in "${googleapis[@]}"
+do
+  gcloud services enable  "${i}"
+done
+```
+
+#### Create Pool
+```shell
+gcloud iam workload-identity-pools create aws-to-gcp \
+    --location="global" \
+    --description="Workload identity pool for aws applications to connect to GCP APIs" \
+    --display-name="aws-to-gcp"
     
-    googleapis=( iam.googleapis.com iamcredentials.googleapis.com cloudresourcemanager.googleapis.com serviceusage.googleapis.com sts.googleapis.com )
+gcloud iam workload-identity-pools providers create-aws staging-pool \
+  --location="global"  \
+  --workload-identity-pool="aws-to-gcp" \
+  --account-id="${AWS_ACCOUNT_ID}"
+```
+
+#### Create service account and bindings
+```shell
+export PROJECT_NUMBER=`gcloud projects describe ${GCP_PROJECT_ID} --format='value(projectNumber)'`
+gcloud iam service-accounts create aws-federated
+
+gcloud iam service-accounts add-iam-policy-binding aws-federated@${GCP_PROJECT_ID}.iam.gserviceaccount.com   \
+    --role roles/iam.workloadIdentityUser \
+    --member "principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/aws-to-gcp/subject/${AWS_ROLE_ARN}"
     
-    # Enable APIs in GCP
-    for i in "${googleapis[@]}"
-    do
-      gcloud services enable  "${i}"
-    done
-    ```
-    
-    #### Create Pool
-    ```shell
-    gcloud iam workload-identity-pools create aws-to-gcp \
-        --location="global" \
-        --description="Workload identity pool for aws applications to connect to GCP APIs" \
-        --display-name="aws-to-gcp"
-        
-    gcloud iam workload-identity-pools providers create-aws staging-pool \
-      --location="global"  \
-      --workload-identity-pool="aws-to-gcp" \
-      --account-id="${AWS_ACCOUNT_ID}"
-    ```
-    
-    #### Create service account and bindings
-    ```shell
-    export PROJECT_NUMBER=`gcloud projects describe ${GCP_PROJECT_ID} --format='value(projectNumber)'`
-    gcloud iam service-accounts create aws-federated
-    
-    gcloud iam service-accounts add-iam-policy-binding aws-federated@${GCP_PROJECT_ID}.iam.gserviceaccount.com   \
-        --role roles/iam.workloadIdentityUser \
-        --member "principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/aws-to-gcp/subject/${AWS_ROLE_ARN}"
-        
-    gcloud iam service-accounts add-iam-policy-binding aws-federated@${GCP_PROJECT_ID}.iam.gserviceaccount.com   \
-        --role roles/iam.workloadIdentityUser \
-        --member "principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/aws-to-gcp/attribute.aws_role/arn:aws:sts::${AWS_ACCOUNT_ID}:assumed-role/${AWS_ROLE_NAME}" 
-    ```
-    
-    #### Get the configuration file
-    ```shell
-    gcloud beta iam workload-identity-pools create-cred-config \
-        projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/aws-to-gcp/providers/staging-pool \
-        --service-account=aws-federated@${GCP_PROJECT_ID}.iam.gserviceaccount.com \
-        --output-file=sts-creds.json \
-        --aws
-    ```
-    
-    #### Setup permissions
-    ```shell
-    gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} --member="serviceAccount:aws-federated@${GCP_PROJECT_ID}.iam.gserviceaccount.com" --role="roles/datastore.user"
-    ```
+gcloud iam service-accounts add-iam-policy-binding aws-federated@${GCP_PROJECT_ID}.iam.gserviceaccount.com   \
+    --role roles/iam.workloadIdentityUser \
+    --member "principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/aws-to-gcp/attribute.aws_role/arn:aws:sts::${AWS_ACCOUNT_ID}:assumed-role/${AWS_ROLE_NAME}" 
+```
+
+#### Get the configuration file
+```shell
+gcloud beta iam workload-identity-pools create-cred-config \
+    projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/aws-to-gcp/providers/staging-pool \
+    --service-account=aws-federated@${GCP_PROJECT_ID}.iam.gserviceaccount.com \
+    --output-file=sts-creds.json \
+    --aws
+```
+
+#### Setup permissions
+```shell
+gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} --member="serviceAccount:aws-federated@${GCP_PROJECT_ID}.iam.gserviceaccount.com" --role="roles/datastore.user"
+```
 </details>
