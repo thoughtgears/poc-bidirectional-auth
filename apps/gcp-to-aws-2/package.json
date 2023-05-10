@@ -1,0 +1,18 @@
+{
+  "name": "m2mjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity": "^3.316.0",
+    "@aws-sdk/client-s3": "^3.321.1",
+    "aws-sdk": "^2.1361.0",
+    "google-auth-library": "^8.7.0",
+    "request-promise": "^4.2.6"
+  }
+}

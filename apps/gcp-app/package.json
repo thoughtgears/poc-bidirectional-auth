@@ -1,0 +1,14 @@
+{
+  "name": "gcp-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.325.0",
+    "@aws-sdk/client-sts": "^3.325.0",
+    "google-auth-library": "^8.8.0"
+  }
+}
