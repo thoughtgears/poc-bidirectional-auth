@@ -30,7 +30,7 @@ getIdTokenFromMetadataServer()
 // // Load STS and configure assume role with web identity
 
 async function awssts(token) {
-  const RoleArn = 'arn:aws:iam::858545927766:role/gcp-to-aws-2';
+  const RoleArn = process.env.ROLE_ARN
   const RoleSessionName = 'session1';
   const {STSClient, AssumeRoleWithWebIdentityCommand} = require("@aws-sdk/client-sts");
   const client = new STSClient({region: "eu-west-1"})

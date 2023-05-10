@@ -1,6 +1,6 @@
 const auth = require('./lib/auth');
 
-const roleArn = 'arn:aws:iam::858545927766:role/gcp-to-aws-2';
+const roleArn = process.env.ROLE_ARN;
 
 auth.getStsCredentials('sts-trust',roleArn)
 .catch(err => {
