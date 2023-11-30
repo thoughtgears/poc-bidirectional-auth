@@ -10,7 +10,7 @@
     "build:docker": "yarn creds && docker build -t aws-app ."
   },
   "dependencies": {
-    "@google-cloud/firestore": "^6.5.0",
+    "@google-cloud/firestore": "^7.0.0",
     "firebase-admin": "^11.6.0"
   }
 }
